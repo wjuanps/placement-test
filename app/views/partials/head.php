@@ -9,8 +9,13 @@
 
     <link rel="icon" href="public/favicon.ico" type="image/x-icon" />
 
+    
     <link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="node_modules/font-awesome/css/font-awesome.css" />
+
+    <link href="https://fonts.googleapis.com/css?family=Fira+Sans" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css" />
+
     <link rel="stylesheet" href="public/css/styles.css" />
 
   </head>
