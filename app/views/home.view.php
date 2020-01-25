@@ -28,7 +28,7 @@
               <p class="card-text">Após responder a última pergunta, clique em <strong>FINISH</strong> para finalizar o teste.</p>
               <p class="card-text">Boa Prova</p>
             </div>
-            <a href="#" class="btn btn-primary" style="border-radius: 0">Go somewhere</a>
+            <a href="/placement-test" class="btn btn-primary" style="border-radius: 0">INICIAR TESTE</a>
           </div>
         </div>
     </div>

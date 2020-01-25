@@ -112,12 +112,12 @@
     display: none;
 }
 
-.respondida {
-    background-color: green !important;
+.respondida a {
+    background-color: #C6D5E5 !important;
 }
 
 .active a {
-    background-color: blue !important;
+    background-color: #285585 !important;
 }
 
 .progress-dot {
@@ -125,7 +125,7 @@
     width: 0.6em;
     height: 0.6em;
     border-radius: 50%;
-    margin: 0 0.25em;
+    margin: 0 0.2em;
     cursor: pointer;
     background: #fff;
     background: #cecece;
@@ -134,6 +134,7 @@
 .progress-item {
     list-style: none;
     display: inline-block;
+    margin-right: ;
 }
 
 .dots-container {
@@ -151,4 +152,8 @@ ul {
     margin-inline-start: 0px;
     margin-inline-end: 0px;
     padding-inline-start: 40px;
+}
+
+#previous:disabled, #next:disabled {
+  cursor: not-allowed;
 }
