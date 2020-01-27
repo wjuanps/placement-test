@@ -8,7 +8,6 @@
     <title>Placement Test | Really Education</title>
 
     <link rel="icon" href="public/favicon.ico" type="image/x-icon" />
-
     
     <link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="node_modules/font-awesome/css/font-awesome.css" />

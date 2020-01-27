@@ -10,52 +10,145 @@ class PagesController {
     return view('home');
   }
 
+  public function register() {
+    return view('register');
+  }
+
+  public function store() {
+    $name    = trim(strip_tags(filter_input(INPUT_POST, 'name', FILTER_SANITIZE_STRING)));
+    $email   = trim(strip_tags(filter_input(INPUT_POST, 'email', FILTER_SANITIZE_STRING)));
+    $phone   = trim(strip_tags(filter_input(INPUT_POST, 'phone', FILTER_SANITIZE_STRING)));
+    $country = trim(strip_tags(filter_input(INPUT_POST, 'country', FILTER_SANITIZE_STRING)));
+    $state   = trim(strip_tags(filter_input(INPUT_POST, 'state', FILTER_SANITIZE_STRING)));
+    $city    = trim(strip_tags(filter_input(INPUT_POST, 'city', FILTER_SANITIZE_STRING)));
+
+    $placement_key = __encrypt(time());
+
+    App::get('database')->insert(
+      'avaliacaos',
+      array(
+        'email'           => $email,
+        'avaliacao_key'   => $placement_key,
+        'nome'            => $name,
+        'data_nascimento' => null,
+        'whatsapp'        => $phone,
+        'pais'            => \explode('_', $country)[0],
+        'cidade'          => \explode('_', $city)[0],
+        'estado'          => \explode('_', $state)[0],
+        'resultado'       => -1,
+        'created_at'      => date('Y-m-d H:i:s'),
+        'updated_at'      => date('Y-m-d H:i:s')
+      )
+    );
+
+    return view('redirect', \compact('placement_key'));
+  }
+
   public function test() {
-
-    $temp = App::get('database')->select("`questaos`", "*", "order by rand()");
-
-    $questoes = array_map(function ($questao) {
-      $alternativas = 
-        App::get('database')
-              ->select(
-                "`questao_alternativas`", 
-                "id, resposta", 
-                "where questao_alternativas.questao_id = {$questao->id}",
-                "order by rand()"
-              );
-
-      return array(
-        "id" => $questao->id,
-        "enunciado" => $questao->enunciado,
-        "alternativas" => $alternativas
-      );
-    }, $temp);
-
-    // die(\json_encode($array));
-
-    return view('test', compact('questoes'));
+    return view('test-your-english');
   }
 
   public function getQuestoes() {
-    $temp = App::get('database')->select("`questaos`", "*", "order by rand()");
+    $questionsTemp = App::get('database')->select("`questaos`", "*", "ORDER BY RAND()", "LIMIT 50");
+    $placementKey  = trim(filter_input(INPUT_GET, 'placement', FILTER_SANITIZE_STRING));
+    $placementKey  = str_replace(" ", "+", $placementKey);
+    
+    $placementId = App::get('database')->select("`avaliacaos`", "id", "WHERE `avaliacao_key` = '{$placementKey}'");
+    $placementId = (int) $placementId[0]->id;
+
+    foreach ($questionsTemp as $question) {
+      App::get('database')->insert(
+        "avaliacao_questaos",
+        array(
+          "avaliacao_id" => $placementId,
+          "questao_id"   => $question->id,
+          "created_at"   => date('Y-m-d H:i:s'),
+          "updated_at"   => date('Y-m-d H:i:s')
+        )
+      );
+    }
 
     $questoes = array_map(function ($questao) {
       $alternativas = 
         App::get('database')
               ->select(
                 "`questao_alternativas`", 
-                "id, resposta", 
+                "id, resposta, alternativa", 
                 "where questao_alternativas.questao_id = {$questao->id}",
                 "order by rand()"
               );
 
       return array(
-        "id" => $questao->id,
-        "enunciado" => $questao->enunciado,
+        "id"           => $questao->id,
+        "enunciado"    => $questao->enunciado,
+        "respondida"   => 0,
+        "resposta"     => '',
         "alternativas" => $alternativas
       );
-    }, $temp);
+    }, $questionsTemp);
 
     die(\json_encode($questoes));
+  }
+
+  public function saveAnswer() {
+    try {
+      $placement = trim(filter_input(INPUT_POST, 'placement', FILTER_SANITIZE_STRING));
+      $question  = (int) trim(filter_input(INPUT_POST, 'question', FILTER_SANITIZE_STRING));
+      $answer    = (int) trim(filter_input(INPUT_POST, 'answer', FILTER_SANITIZE_STRING));
+
+      $placementId = App::get('database')->select('`avaliacaos`', 'id', "WHERE avaliacao_key = '{$placement}'");
+      $placementId = (int) $placementId[0]->id;
+
+      $questionAnswer = App::get('database')->select(
+        "avaliacao_respostas", "*",
+        "WHERE avaliacao_id = {$placementId} AND questao_id = {$question}"
+      );
+
+      if (is_null($questionAnswer) || empty($questionAnswer)) {
+        App::get('database')->insert(
+          "avaliacao_respostas",
+          array(
+            "avaliacao_id" => $placementId,
+            "questao_id" => $question,
+            "questao_alternativas_id" => $answer,
+            "created_at" => date('Y-m-d H:i:s'),
+            "updated_at" => date('Y-m-d H:i:s')
+          )
+        );
+      } else {
+        App::get('database')->update(
+          array('questao_alternativas_id', 'updated_at'),
+          array($answer, date('Y-m-d H:i:s')),
+          'avaliacao_respostas',
+          "WHERE avaliacao_id = {$placementId} AND questao_id = {$question}"
+        );
+      }
+    } catch (\Throwable $th) {
+      dd($th);
+    }
+  }
+
+  public function getGeoNames() {
+    try {
+      $gid = utf8_decode(trim(strip_tags(filter_input(INPUT_GET, 'gid', FILTER_SANITIZE_STRING))));
+      $url = "http://api.geonames.org/childrenJSON?geonameId={$gid}&maxRows=1000&username=wjuan&featureCode=ADM2";
+
+      $ch = curl_init();
+      curl_setopt($ch, CURLOPT_URL, $url);
+      curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
+      curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+      $responseJSON = curl_exec($ch);
+
+      if ($responseJSON == false) {
+          die(curl_error($ch));
+      }
+
+      curl_close($ch);
+
+      die($responseJSON);
+    } catch (\Throwable $th) {
+        dd('Erro');
+    }
   }
 }

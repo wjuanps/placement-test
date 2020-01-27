@@ -6,10 +6,9 @@
       
       <img 
         class="img-fluid"
-        src="public/img/logo.png" 
-        alt="Logo Really" />
+        src="https://ur.really.education/imagens/logo-really.png" 
+        alt="Logo Really"
+        width="150px" />
     </a>
-
-    <a class="btn btn-primary" href="#">Sign In</a>
   </div>
 </nav>
