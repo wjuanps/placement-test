@@ -11,8 +11,8 @@
             <h5 class="card-header bg-primary text-white text-right">INFORMATION</h5>
             <img class="card-img-top img-fluid" src="public/img/placement_test.png" alt="">
             <ul class="list-group list-group-flush">
-              <li class="list-group-item">Cras justo odio</li>
-              <li class="list-group-item">Dapibus ac facilisis in</li>
+              <li class="list-group-item"><i class="fa fa-clock-o" aria-hidden="true"></i> Length <span class="float-right">30 minutes</span></li>
+              <li class="list-group-item"><i class="fa fa-graduation-cap" aria-hidden="true"></i> Subject <span class="float-right">Test</span></li>
             </ul>
           </div>
         </div>
