@@ -3,6 +3,8 @@
 define('__KEY', 'ZnlLPaZCe04LX-23OBh8wfG0ie-2ksFkYeNAqdaGf46-aGTS9iUgh');
 define('__METHOD', 'AES-256-CBC');
 
+define('__LIMIT_QUESTIONS__', 50);
+
 function __encrypt(string $data, string $key = __KEY, string $method = __METHOD): string {
   try {
       $ivSize = openssl_cipher_iv_length($method);

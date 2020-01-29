@@ -1,11 +1,12 @@
 <?php include_once 'app/views/partials/head.php'; ?>
 
-  <div class="w-75 mx-auto mt-5">
+    <form class="hidden" id="formPlacement" action="end-placement" method="post">
+        <input type="hidden" id="placementKey" name="placement" />
+        <input type="hidden" id="answers" name="answers" />
+    </form>
+
+    <div class="w-75 mx-auto mt-5">
         <h2>PLACEMENT TEST - BASIC</h2>
-
-        <input type="hidden" id="totalQuestoes" value="<?= count($questoes) ?>" />
-
-        <input type="hidden" id="ques" value="<?= json_encode($questoes) ?>" />
 
         <hr class="hr" />
 
@@ -67,15 +68,15 @@
 
     window.onload = async () => {
         try {
-            let questoes = JSON.parse(localStorage.getItem('questions'));
-            if (questoes == null || questoes == undefined) {
-                questoes = await placement.getQuestions();
-                localStorage.setItem('questions', JSON.stringify(questoes.data));
+            let questions = JSON.parse(localStorage.getItem('questions'));
+            if (questions == null || questions == undefined) {
+                questions = await placement.getQuestions();
+                localStorage.setItem('questions', JSON.stringify(questions.data));
 
-                questoes = JSON.parse(localStorage.getItem('questions'));
+                questions = JSON.parse(localStorage.getItem('questions'));
             }
 
-            placement.init(questoes);
+            placement.init(questions);
         } catch (error) { console.error(error); }
     }
 
@@ -88,6 +89,8 @@
 
         next: ()     => document.getElementById('next'),
         previous: () => document.getElementById('previous'),
+
+        end: () => document.getElementById('end'),
 
         init(questions) {
             let testView = document.getElementById('test');
@@ -108,12 +111,11 @@
         },
 
         watch() {
-            const endButton = document.getElementById('end');
             setInterval(() => {
                 let questions = JSON.parse(localStorage.getItem('questions'));
-                let response = questions.every((question) => question.respondida === 1);
+                let response  = questions.every((question) => question.respondida === 1);
 
-                endButton.classList.remove((response) ? 'hidden' : 't');
+                this.end().classList.remove((response) ? 'hidden' : 't');
             }, 1000);
         },
 
@@ -154,8 +156,31 @@
             this.next().removeAttribute('disabled');
             this.previous().setAttribute('disabled', 'disabled');
 
-            this.next().addEventListener('click', () => this.changeQuestion(++this.index, questoes));
+            this.next().addEventListener('click', ()     => this.changeQuestion(++this.index, questoes));
             this.previous().addEventListener('click', () => this.changeQuestion(--this.index, questoes));
+
+            this.end().addEventListener('click', this.endPlacement);
+        },
+
+        endPlacement() {
+            let placement = localStorage.getItem('placement');
+            let questions = JSON.parse(localStorage.getItem('questions'));
+
+            let answers = questions.map((question) => {
+                return {
+                    "questionId": parseInt(question.id),
+                    "resposta":   question.resposta
+                };
+            });
+
+            let formPlacement  = document.getElementById('formPlacement');
+            let inputPlacement = document.getElementById('placementKey');
+            let inputAnswers   = document.getElementById('answers');
+
+            inputPlacement.value = placement;
+            inputAnswers.value   = JSON.stringify({ ...answers });
+
+            formPlacement.submit();
         },
 
         getQuestions: async () => await axios(`questoes?placement=${ localStorage.getItem('placement') }`),
@@ -231,7 +256,7 @@
                         <a 
                             href="" 
                             class="progress-dot indicator" 
-                            title="Question ${ i + 1 } of ${ questions.length }, Unanswered" 
+                            title="Question ${ i + 1 } of ${ questions.length }" 
                             tabindex="-1">
                         </a>
                     </li>  

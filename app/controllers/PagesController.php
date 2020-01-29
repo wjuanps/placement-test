@@ -49,7 +49,7 @@ class PagesController {
   }
 
   public function getQuestoes() {
-    $questionsTemp = App::get('database')->select("`questaos`", "*", "ORDER BY RAND()", "LIMIT 50");
+    $questionsTemp = App::get('database')->select("`questaos`", "*", "ORDER BY RAND()", "LIMIT " . __LIMIT_QUESTIONS__);
     $placementKey  = trim(filter_input(INPUT_GET, 'placement', FILTER_SANITIZE_STRING));
     $placementKey  = str_replace(" ", "+", $placementKey);
     
@@ -126,6 +126,55 @@ class PagesController {
     } catch (\Throwable $th) {
       dd($th);
     }
+  }
+
+  public function endPlacement() {
+    try {
+      $placement  = trim(filter_input(INPUT_POST, 'placement', FILTER_SANITIZE_STRING));
+      $placement  = str_replace(" ", "+", $placement);
+
+      $answers   = json_decode(filter_input(INPUT_POST, 'answers'));
+
+      $total = array_reduce(get_object_vars($answers), function ($carry , $answer) use ($placement) {
+        $temp = 
+          App::get('database')
+            ->select(
+              "`avaliacaos`
+                INNER JOIN `avaliacao_respostas` ON (`avaliacaos`.id = `avaliacao_respostas`.`avaliacao_id`)
+                INNER JOIN `questaos` ON (`avaliacao_respostas`.`questao_id` = `questaos`.`id`)",
+              "1",
+              "WHERE `avaliacaos`.`avaliacao_key` = '{$placement}'
+                AND `questaos`.`id` = {$answer->questionId} 
+                AND `questaos`.`correta` = '{$answer->resposta}'"
+            );
+
+        if (!is_null($temp) && !empty($temp)) {
+          $carry += 1;
+        }
+
+        return $carry;
+      });
+
+      $percent = (($total * 100) / __LIMIT_QUESTIONS__);
+
+      App::get('database')->update(
+        array('resultado'),
+        array($percent),
+        'avaliacaos',
+        "WHERE avaliacao_key = '{$placement}'"
+      );
+  
+      return redirect("result?total={$total}&percent={$percent}");
+    } catch (\Throwable $th) {
+      dd($th);
+    }
+  }
+
+  public function showResult() {
+    $total   = (int) trim(strip_tags(filter_input(INPUT_GET, 'total')));
+    $percent = (int) trim(strip_tags(filter_input(INPUT_GET, 'percent')));
+
+    return view('result', \compact('percent', 'total'));
   }
 
   public function getGeoNames() {
