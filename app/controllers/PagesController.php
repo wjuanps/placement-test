@@ -49,45 +49,49 @@ class PagesController {
   }
 
   public function getQuestoes() {
-    $questionsTemp = App::get('database')->select("`questaos`", "*", "ORDER BY RAND()", "LIMIT " . __LIMIT_QUESTIONS__);
-    $placementKey  = trim(filter_input(INPUT_GET, 'placement', FILTER_SANITIZE_STRING));
-    $placementKey  = str_replace(" ", "+", $placementKey);
-    
-    $placementId = App::get('database')->select("`avaliacaos`", "id", "WHERE `avaliacao_key` = '{$placementKey}'");
-    $placementId = (int) $placementId[0]->id;
+    try {
+      $questionsTemp = App::get('database')->select("`questaos`", "*", "ORDER BY RAND()", "LIMIT " . __LIMIT_QUESTIONS__);
+      $placementKey  = trim(filter_input(INPUT_GET, 'placement', FILTER_SANITIZE_STRING));
+      $placementKey  = str_replace(" ", "+", $placementKey);
+      
+      $placementId = App::get('database')->select("`avaliacaos`", "id", "WHERE `avaliacao_key` = '{$placementKey}'");
+      $placementId = (int) $placementId[0]->id;
 
-    foreach ($questionsTemp as $question) {
-      App::get('database')->insert(
-        "avaliacao_questaos",
-        array(
-          "avaliacao_id" => $placementId,
-          "questao_id"   => $question->id,
-          "created_at"   => date('Y-m-d H:i:s'),
-          "updated_at"   => date('Y-m-d H:i:s')
-        )
-      );
+      foreach ($questionsTemp as $question) {
+        App::get('database')->insert(
+          "avaliacao_questaos",
+          array(
+            "avaliacao_id" => $placementId,
+            "questao_id"   => $question->id,
+            "created_at"   => date('Y-m-d H:i:s'),
+            "updated_at"   => date('Y-m-d H:i:s')
+          )
+        );
+      }
+
+      $questoes = array_map(function ($questao) {
+        $alternativas = 
+          App::get('database')
+                ->select(
+                  "`questao_alternativas`", 
+                  "id, resposta, alternativa", 
+                  "where questao_alternativas.questao_id = {$questao->id}",
+                  "order by rand()"
+                );
+
+        return array(
+          "id"           => $questao->id,
+          "enunciado"    => $questao->enunciado,
+          "respondida"   => 0,
+          "resposta"     => '',
+          "alternativas" => $alternativas
+        );
+      }, $questionsTemp);
+
+      die(\json_encode($questoes));
+    } catch (\Throwable $th) {
+      throw $th;
     }
-
-    $questoes = array_map(function ($questao) {
-      $alternativas = 
-        App::get('database')
-              ->select(
-                "`questao_alternativas`", 
-                "id, resposta, alternativa", 
-                "where questao_alternativas.questao_id = {$questao->id}",
-                "order by rand()"
-              );
-
-      return array(
-        "id"           => $questao->id,
-        "enunciado"    => $questao->enunciado,
-        "respondida"   => 0,
-        "resposta"     => '',
-        "alternativas" => $alternativas
-      );
-    }, $questionsTemp);
-
-    die(\json_encode($questoes));
   }
 
   public function saveAnswer() {
@@ -158,12 +162,12 @@ class PagesController {
       $percent = (($total * 100) / __LIMIT_QUESTIONS__);
 
       App::get('database')->update(
-        array('resultado'),
-        array($percent),
+        array('resultado', 'updated_at'),
+        array($percent, date('Y-m-d H:i:s')),
         'avaliacaos',
         "WHERE avaliacao_key = '{$placement}'"
       );
-  
+
       return redirect("result?total={$total}&percent={$percent}");
     } catch (\Throwable $th) {
       dd($th);

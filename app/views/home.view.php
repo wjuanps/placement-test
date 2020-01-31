@@ -46,15 +46,30 @@
     let button    = document.getElementById('button');
     let questions = localStorage.getItem('questions');
 
+    let result = JSON.parse(localStorage.getItem('result'));
     if (questions != null && questions != undefined) {
-      button.innerHTML = `
-        <a href="/register" class="btn btn-primary col-md-6" style="border-radius: 0">INICIAR NOVO TESTE</a>
-        <a href="/test-your-english" class="btn btn-success col-md-6" style="border-radius: 0">CONTINUAR TESTE</a>
-      `;
+      buttons = `<a href="/register" class="btn btn-primary col-md-6" style="border-radius: 0">INICIAR NOVO TESTE</a>`;
+
+      buttons += (result != null && result != undefined)
+                  ? `<button id="result" class="btn btn-success col-md-6" style="border-radius: 0">VISUALIZAR RESULTADO</button>`
+                  : `<a href="/test-your-english" class="btn btn-success col-md-6" style="border-radius: 0">CONTINUAR TESTE</a>`;
+
+      button.innerHTML = buttons;
     } else {
       button.innerHTML = `
         <a href="/register" class="btn btn-primary col-md-12" style="border-radius: 0">INICIAR TESTE</a>
       `;
     }
+
+    document.getElementById('result')
+      .addEventListener(
+        'click', 
+        () => window.open(`/result?total=${ result.total }&percent=${ result.percent }`, '_self')
+      );
+  }
+
+  const visualizarResultado = (total, percent) => {
+    console.log(result);
+    location.pathname = `/result?total=${ result.total }&percent=${ result.percent }`;
   }
 </script>

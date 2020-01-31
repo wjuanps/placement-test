@@ -8,25 +8,25 @@
         <div class="form-row mb-3">
             <div class="form-group col-md-4">
                 <label for="name">Nome</label>
-                <input type="text" class="form-control" name="name" id="name" placeholder="Nome" />
+                <input type="text" class="form-control" name="name" id="name" placeholder="Nome" required="required" />
             </div>
 
             <div class="form-group col-md-4">
                 <label for="email">Email</label>
-                <input type="email" class="form-control" name="email" id="email" placeholder="Email" />
+                <input type="email" class="form-control" name="email" id="email" placeholder="Email" required="required" />
             </div>
 
             <div class="form-group col-md-4">
                 <label for="phone">Telefone</label>
-                <input type="phone" class="form-control" name="phone" id="phone" placeholder="Telefone" />
+                <input type="phone" class="form-control" name="phone" id="phone" placeholder="Telefone" required="required" />
             </div>
         </div>
         
         <div class="form-row mb-3">
             <div class="form-group col-md-4">
                 <label for="country">País</label>
-                <select id="country" name="country" class="form-control">
-                    <option selected disabled>Choose...</option>
+                <select id="country" name="country" class="form-control" required="required">
+                    <option selected>Choose...</option>
 
                     <option value="brazil_3469034">Brasil</option>
                     <option value="usa_6252001">Estados Unidos</option>
@@ -36,15 +36,15 @@
 
             <div class="form-group col-md-4">
                 <label for="state">Estado</label>
-                <select id="state" name="state" class="form-control">
-                    <option selected disabled>Choose...</option>
+                <select id="state" name="state" class="form-control" required="required">
+                    <option selected>Choose...</option>
                 </select>
             </div>
 
             <div class="form-group col-md-4">
                 <label for="city">Cidade</label>
-                <select id="city" name="city" class="form-control">
-                    <option selected disabled>Choose...</option>
+                <select id="city" name="city" class="form-control" required="required">
+                    <option selected>Choose...</option>
                 </select>
             </div>
         </div>
@@ -71,6 +71,7 @@
 
                 localStorage.removeItem('placement');
                 localStorage.removeItem('questions');
+                localStorage.removeItem('result');
 
                 event.currentTarget.submit();
             });

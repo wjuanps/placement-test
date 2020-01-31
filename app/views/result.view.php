@@ -53,6 +53,8 @@
 		const total   = document.getElementById('total');
 		const percent = document.getElementById('percent');
 
+		localStorage.setItem('result', JSON.stringify({ "total": total.value, "percent": percent.value }));
+
 		var i = 1;
 
 		function myTimer() {
@@ -69,5 +71,4 @@
 			clearInterval(myVar);
 		}
 	}
-
 </script>
