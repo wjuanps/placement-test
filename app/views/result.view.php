@@ -3,7 +3,7 @@
 	<input type="hidden" id="total" value="<?= $total ?>" />
 	<input type="hidden" id="percent" value="<?= $percent ?>" />
 
-  	<div class="w-75 mx-auto mt-5">
+  <div class="w-75 mx-auto mt-5">
 		<h2>PLACEMENT TEST - BASIC</h2>
 
 		<hr class="hr" />
@@ -18,7 +18,7 @@
 						id="progress"
 						class="progress-bar bg-success" 
 						role="progressbar" 
-						aria-valuenow="50" 
+						aria-valuenow="0" 
 						aria-valuemin="0" 
 						aria-valuemax="100">
 						</div>
@@ -40,7 +40,7 @@
 				</h5>
 			</div>
 		</div>
-  	</div>
+  </div>
 
 <?php include_once 'app/views/partials/footer.php'; ?>
 

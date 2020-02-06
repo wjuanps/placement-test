@@ -248,7 +248,7 @@
 
         loadIndicators(questions) {
             let divIndicator = document.getElementById('indicator');
-            let html = `<div class="dots-container col-md-12" role="navigation">`;
+            let html = `<ul class="dots-container col-md-12" role="navigation">`;
 
             questions.forEach((question, i) => {
                 html += `
