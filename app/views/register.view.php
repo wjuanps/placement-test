@@ -26,7 +26,7 @@
             <div class="form-group col-md-4">
                 <label for="country">País</label>
                 <select id="country" name="country" class="form-control" required="required">
-                    <option selected>Choose...</option>
+                    <option selected>Escolha...</option>
 
                     <option value="brazil_3469034">Brasil</option>
                     <option value="usa_6252001">Estados Unidos</option>
@@ -37,14 +37,14 @@
             <div class="form-group col-md-4">
                 <label for="state">Estado</label>
                 <select id="state" name="state" class="form-control" required="required">
-                    <option selected>Choose...</option>
+                    <option selected>Escolha...</option>
                 </select>
             </div>
 
             <div class="form-group col-md-4">
                 <label for="city">Cidade</label>
                 <select id="city" name="city" class="form-control" required="required">
-                    <option selected>Choose...</option>
+                    <option selected>Escolha...</option>
                 </select>
             </div>
         </div>
@@ -53,7 +53,7 @@
             <h6>Ao me cadastrar, confirmo que lí e aceito os <a href="">Termos de Uso</a> e as <a href="">Politicas de Privacidade</a></h6>
         </div>
 
-        <button type="submit" class="btn btn-primary">INICIAR TESTE</button>
+        <button type="submit" id="buttonInitTest" class="btn btn-primary">INICIAR TESTE</button>
     </form>
 </div>
 
@@ -69,6 +69,11 @@
             form.addEventListener('submit', (event) => {
                 event.preventDefault();
 
+                let buttonInitTest = document.getElementById("buttonInitTest");
+                buttonInitTest.setAttribute('disabled', 'disabled');
+                buttonInitTest.style.cursor = 'not-allowed';
+                buttonInitTest.textContent  = 'Iniciando Teste ...';
+
                 localStorage.removeItem('placement');
                 localStorage.removeItem('questions');
                 localStorage.removeItem('result');
@@ -79,7 +84,7 @@
             let country = document.getElementById('country');
             country.addEventListener('change', (event) => {
                 let city = document.getElementById('city');
-                city.innerHTML = '<option value="">Choose ...</option>';
+                city.innerHTML = '<option value="">Escolha ...</option>';
 
                 geoNames.getPlaces(event.currentTarget.value, 'state');
             });

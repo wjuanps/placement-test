@@ -27,7 +27,7 @@ class PagesController {
       $responseJSON = curl_exec($ch);
 
       if ($responseJSON == false) {
-          die(curl_error($ch));
+        die(curl_error($ch));
       }
 
       curl_close($ch);

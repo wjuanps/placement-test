@@ -30,9 +30,7 @@
             </div>
 
             <div class="card-footer">
-              <div class="row" id="button">
-
-              </div>
+              <div class="row" id="button"></div>
             </div>
           </div>
         </div>
@@ -42,12 +40,16 @@
 <?php include_once 'app/views/partials/footer.php'; ?>
 
 <script>
-  window.onload = () => {
+  window.onload = async () => {
     let button    = document.getElementById('button');
     let questions = localStorage.getItem('questions');
+    let placement = localStorage.getItem('placement');
 
     let result = JSON.parse(localStorage.getItem('result'));
+    
     if (questions != null && questions != undefined) {
+      let response = await fethPlacement(placement);
+
       buttons = `<a href="/register" class="btn btn-primary col-md-6" style="border-radius: 0">INICIAR NOVO TESTE</a>`;
 
       buttons += (result != null && result != undefined)
@@ -55,21 +57,20 @@
                   : `<a href="/test-your-english" class="btn btn-success col-md-6" style="border-radius: 0">CONTINUAR TESTE</a>`;
 
       button.innerHTML = buttons;
+  
+      document.getElementById('result')
+        .addEventListener(
+          'click', 
+          () => window.open(`/result?placement=${ response.data }&total=${ result.total }&percent=${ result.percent }`, '_self')
+        );
     } else {
       button.innerHTML = `
         <a href="/register" class="btn btn-primary col-md-12" style="border-radius: 0">INICIAR TESTE</a>
       `;
     }
-
-    document.getElementById('result')
-      .addEventListener(
-        'click', 
-        () => window.open(`/result?total=${ result.total }&percent=${ result.percent }`, '_self')
-      );
   }
 
-  const visualizarResultado = (total, percent) => {
-    console.log(result);
-    location.pathname = `/result?total=${ result.total }&percent=${ result.percent }`;
+  const fethPlacement = async (placement) => {
+    return await axios(`/get/placement?placement=${ placement }`);
   }
 </script>

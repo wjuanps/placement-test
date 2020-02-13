@@ -26,7 +26,7 @@ const geoNames = {
                 `;
             });
 
-            options.splice(0, 0, '<option value="">Choose ...</option>');
+            options.splice(0, 0, '<option value="">Escolha ...</option>');
 
             element.innerHTML = options.join("");
         }

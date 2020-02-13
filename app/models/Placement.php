@@ -50,6 +50,26 @@ class Placement {
 		);
 	}
 
+	public function getPlacement($placementId) {
+		return (
+			App::get('database')
+					->select(
+						"`avaliacaos`", "*",
+						"WHERE `id` = '{$placementId}'"
+					)[0]
+		);
+	}
+
+	public function getUnity($city) {
+		return (
+			App::get('database')
+					->select(
+						"`unidades`", "id",
+						"WHERE `cidadeUnidade` = '{$city}'"
+					)[0]
+		);
+	}
+
 	public function getPlacementId($placementKey) {
 		$placementId = 
 			App::get('database')
