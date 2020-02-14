@@ -32,7 +32,7 @@ class Router {
       );
     }
 
-    throw new Exception('No route defined for this URI');
+    require_once "app/views/404.view.php";
   }
 
   protected function callAction($controller, $action) {

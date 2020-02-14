@@ -13,7 +13,7 @@ class Connection {
         $config['options']
       );
     } catch (\Throwable $th) {
-      dd('Could not connect');
+      require_once "app/views/500.view.php";
     }
   }
 }
