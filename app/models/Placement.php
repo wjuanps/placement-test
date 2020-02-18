@@ -116,17 +116,17 @@ class Placement {
 			->insert(
 				'avaliacaos',
 				array(
-				'email'           => $email,
-				'avaliacao_key'   => $placement_key,
-				'nome'            => $name,
-				'data_nascimento' => null,
-				'whatsapp'        => $phone,
-				'pais'            => \explode('_', $country)[0],
-				'cidade'          => \explode('_', $city)[0],
-				'estado'          => \explode('_', $state)[0],
-				'resultado'       => -1,
-				'created_at'      => date('Y-m-d H:i:s'),
-				'updated_at'      => date('Y-m-d H:i:s')
+					'email'           => $email,
+					'avaliacao_key'   => $placement_key,
+					'nome'            => $name,
+					'data_nascimento' => null,
+					'whatsapp'        => $phone,
+					'pais'            => \explode('_', $country)[0],
+					'cidade'          => \explode('_', $city)[0],
+					'estado'          => \explode('_', $state)[0],
+					'resultado'       => -1,
+					'created_at'      => date('Y-m-d H:i:s'),
+					'updated_at'      => date('Y-m-d H:i:s')
 				)
 			);
 	}
@@ -136,10 +136,10 @@ class Placement {
 			App::get('database')->insert(
 			  "avaliacao_questaos",
 			  array(
-				"avaliacao_id" => $placementId,
-				"questao_id"   => $question->id,
-				"created_at"   => date('Y-m-d H:i:s'),
-				"updated_at"   => date('Y-m-d H:i:s')
+					"avaliacao_id" => $placementId,
+					"questao_id"   => $question->id,
+					"created_at"   => date('Y-m-d H:i:s'),
+					"updated_at"   => date('Y-m-d H:i:s')
 			  )
 			);
 		}
@@ -150,11 +150,11 @@ class Placement {
 			App::get('database')->insert(
 			  "avaliacao_respostas",
 			  array(
-				"avaliacao_id" => $placementId,
-				"questao_id" => $question,
-				"questao_alternativas_id" => $answer,
-				"created_at" => date('Y-m-d H:i:s'),
-				"updated_at" => date('Y-m-d H:i:s')
+					"avaliacao_id" => $placementId,
+					"questao_id" => $question,
+					"questao_alternativas_id" => $answer,
+					"created_at" => date('Y-m-d H:i:s'),
+					"updated_at" => date('Y-m-d H:i:s')
 			  )
 			);
 		} else {

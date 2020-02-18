@@ -2,13 +2,14 @@
 
   <div class="text-center mt-1">
     <lottie-player
-      class="mx-auto"
       src="https://assets9.lottiefiles.com/packages/lf20_jAWhUR.json"
-      background="transparent"
-      speed="1"
       style="width: 400px; height: 400px;"
+      background="transparent"
+      class="mx-auto"
+      speed="1"
+      autoplay
       loop
-      autoplay >
+    >
     </lottie-player>
 
     <h1 style="margin-top: -70px">PAGE NOT FOUND</h1>
